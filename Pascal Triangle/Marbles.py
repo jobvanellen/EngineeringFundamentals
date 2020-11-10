@@ -37,11 +37,11 @@ while time < 1011:
 
             lr = random.randint(0,1)
             #move left
-            if lr == 0:
+            if lr == 1:
                 x_pos[i] = x_pos[i] - .5
                 y_pos[i] = y_pos[i] - 1
             #move right
-            if lr == 1:
+            if lr == 0:
                 x_pos[i] = x_pos[i] + .5
                 y_pos[i] = y_pos[i] - 1
 
