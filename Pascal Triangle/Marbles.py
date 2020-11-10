@@ -29,44 +29,8 @@ def calculate_precentages(count, agents):
     return ret
 
 time = 0
-while time < 1011:
-    
-    #all marbles move 1 down (y-1), random left (x -.5) or right (x +.5)
-    for i in range(1, max_agents+1):
-        if status[i] == 1:
 
-            lr = random.randint(0,1)
-            #move left
-            if lr == 1:
-                x_pos[i] = x_pos[i] - .5
-                y_pos[i] = y_pos[i] - 1
-            #move right
-            if lr == 0:
-                x_pos[i] = x_pos[i] + .5
-                y_pos[i] = y_pos[i] - 1
-
-            #plot new position
-            plt.scatter(x_pos[i], y_pos[i], c='b', marker='o')
-
-            if y_pos[i] == 0:
-                #update column count with level 0 marbles
-                column_count[int(x_pos[i])] = column_count[int(x_pos[i])] + 1
-                #remove marbles at level 0
-                status[i] = 0
-                finished_agents = finished_agents + 1
-            
-
-    #generate new marble first 1000 cycles
-    if time < 1000:
-        status[time] = 1
-        x_pos[time] = 4.5
-        y_pos[time] = 9
-        plt.scatter(x_pos[time], y_pos[time], c='b', marker='o')
-
-    time = time + 1
-
-    #plot all the stuff & save all the plots
-
+def plot_all_the_stuff():
     #plot dividers
     plt.scatter([4.5],[8.5], c='r', marker='^')
     plt.scatter([4,5],[7.5,7.5], c='r', marker='^')
@@ -96,15 +60,61 @@ while time < 1011:
     plt.xlabel('Marble results')
     plt.ylabel('Falling depth')
 
-    fname = 'Marbles-%03d.png' % time
-    plt.savefig('images/'+fname)
-    #plt.show(block = False)
-    #plt.pause(.05)
-    #plt.close
+    #fname = 'Marbles-%03d.png' % time
+    #plt.savefig('images/'+fname)
+    plt.show(block = False)
+    plt.pause(.05)
+    plt.close
     plt.clf()
 
+def plot_agent(x,y):
+    plt.scatter(x, y, c='b', marker='o')
+
+
+while time < 1011:
+    #print("Time: %d" % time)
+    
+    #all marbles move 1 down (y-1), random left (x -.5) or right (x +.5)
+    for i in range(1, max_agents+1):
+        #only active marbles
+        if status[i] == 1:
+            lr = random.randint(0,1)
+            #move left and down
+            if lr == 1:
+                x_pos[i] = x_pos[i] - .5
+                y_pos[i] = y_pos[i] - 1
+            #move right and down
+            if lr == 0:
+                x_pos[i] = x_pos[i] + .5
+                y_pos[i] = y_pos[i] - 1
+
+            #plot new position
+            plot_agent(x_pos[i], y_pos[i])
+            
+            #marbles at bottom to be removed and counted
+            if y_pos[i] == 0:
+                #update column count with level 0 marbles
+                column_count[int(x_pos[i])] = column_count[int(x_pos[i])] + 1
+                #remove marbles at level 0
+                status[i] = 0
+                finished_agents = finished_agents + 1
+            
+
+    #generate new marble only first 1000 cycles
+    if time < max_agents + 1:
+        status[time] = 1
+        x_pos[time] = 4.5
+        y_pos[time] = 9
+        plot_agent(x_pos[time], y_pos[time])
+
+    time = time + 1
+
+    #plot all the stuff & save all the plots
+    plot_all_the_stuff()
+    
+
 #print column count
-for i in range(0,10):
+for i in range(0,11):
     print('Column: ' + str(i+1) + ': ' + str(column_count[i]) + ', ' + str(column_count[i]/10) + '%')
 
 
