@@ -29,8 +29,6 @@ def calculate_precentages(count, agents):
         ret[i] = round(ret[i], 1)
     return ret
 
-
-
 def plot_all_the_stuff():
     #plot dividers
     plt.scatter([4.5],[8.5], c='r', marker='^')
@@ -91,7 +89,7 @@ while time < 1011:
             #plot new position
             plot_agent(x_pos[i], y_pos[i])
             
-            #marbles at bottom to be removed and counted
+            #marbles at bottom (IF y==0) to be removed and counted
             if y_pos[i] == 0:
                 #update column count with level 0 marbles
                 column_count[int(x_pos[i])] = column_count[int(x_pos[i])] + 1
@@ -114,7 +112,7 @@ while time < 1011:
     
 
 #print column count
-for i in range(0,11):
+for i in range(0,10):
     print('Column: ' + str(i+1) + ': ' + str(column_count[i]) + ', ' + str(column_count[i]/10) + '%')
 
 
