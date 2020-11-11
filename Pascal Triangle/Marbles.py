@@ -20,6 +20,7 @@ x_pos.fill(0)
 y_pos.fill(0)  
 status.fill(0)
 column_count.fill(0)
+time = 0
 
 def calculate_precentages(count, agents):
     ret = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
@@ -28,7 +29,7 @@ def calculate_precentages(count, agents):
         ret[i] = round(ret[i], 1)
     return ret
 
-time = 0
+
 
 def plot_all_the_stuff():
     #plot dividers
@@ -74,20 +75,19 @@ def plot_agent(x,y):
 while time < 1011:
     #print("Time: %d" % time)
     
-    #all marbles move 1 down (y-1), random left (x -.5) or right (x +.5)
+    #FOR every marble: move 1 down (y-1), random left (x -.5) or right (x +.5)
     for i in range(1, max_agents+1):
-        #only active marbles
+        #only IF marble is active
         if status[i] == 1:
             lr = random.randint(0,1)
-            #move left and down
-            if lr == 1:
-                x_pos[i] = x_pos[i] - .5
-                y_pos[i] = y_pos[i] - 1
-            #move right and down
+            #move down
+            y_pos[i] = y_pos[i] - 1
+            #move left if 0
             if lr == 0:
+                x_pos[i] = x_pos[i] - .5    
+            #move right if 1
+            if lr == 1:
                 x_pos[i] = x_pos[i] + .5
-                y_pos[i] = y_pos[i] - 1
-
             #plot new position
             plot_agent(x_pos[i], y_pos[i])
             
@@ -101,7 +101,7 @@ while time < 1011:
             
 
     #generate new marble only first 1000 cycles
-    if time < max_agents + 1:
+    if time < max_agents+1:
         status[time] = 1
         x_pos[time] = 4.5
         y_pos[time] = 9
