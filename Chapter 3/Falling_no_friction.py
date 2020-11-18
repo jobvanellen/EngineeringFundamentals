@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
   
 # Define settings.  
 endTime = 10 # The time (seconds) that we simulate.  
-dt = 0.0001 # The time step (seconds) that we use in the first discretization.  
+dt = 0.1 # The time step (seconds) that we use in the first discretization.  
 v0 = 0 # The initial velocity [m/s].  
 s0 = 0 # The initial position [m].  
 g = 9.81 # The gravitational acceleration [m/s^2].  
