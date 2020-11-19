@@ -5,12 +5,12 @@ from math import sqrt
 
 #Define settings
 dt = 0.1 # time step
-endTime = 11 #s, simulated duraiton
+endTime = 130 #s, simulated duraiton
 g = 9.81 #m/s^2 gravitational constant
-A1 = .23 #m^2, cross-sectional area at surface
-A2 = .011 #m^2, cross-sectional area of the hole
+A1 = .049 #m^2, cross-sectional area at surface
+A2 = 6.36*(10**(-5)) #m^2, cross-sectional area of the hole
 Cd = 0.8 #discharge coefficient (0.6<Cd<1.0)
-z0 = .4 #m, initial height
+z0 = .09 #m, initial height
 
 # Set up variables
 time = np.arange(0, endTime + dt, dt) # times to plot  
@@ -20,13 +20,13 @@ zSim[0] = z0 # first simulated value is z0
 
 for i in range (0, len(time)):
     t = time[i]
-    z[i] = ((-(sqrt(g)*Cd*A2)/(sqrt(2)*A1)*t) + sqrt(z0))**2
+    z[i] = ((-((sqrt(g)*Cd*A2)/(sqrt(2)*A1))*t) + sqrt(z0))**2
     z[i] = z[i]*100
 
 for i in range (1, len(time)):
-    zSim[i] = zSim[i-1] - Cd*(A2/A1)*sqrt(2*g)*zSim[i-1]*dt
+    zSim[i] = zSim[i-1] - Cd*(A2/A1)*sqrt(2*g*zSim[i-1])*dt
 
-for i in range (0,len(time)):
+for i in range (0, len(time)):
     zSim[i] = zSim[i]*100
 
 plt.plot(time, z, marker=".")
