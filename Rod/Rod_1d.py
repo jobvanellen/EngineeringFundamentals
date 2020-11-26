@@ -3,6 +3,7 @@
 script to simulate a temperature profile with time axis  
 """   
 #%%   
+import copy   
 import numpy as np    
 import matplotlib.pyplot as plt    
     
@@ -36,7 +37,7 @@ for t in range (0,int(simulation_time/dx)+1):
        temp_points[temp_teller]=temp_profile_new[int(arraysize/2)]    
        temp_axis[temp_teller]=t*dt    
        temp_teller=temp_teller+1            
-    temp_profile_old=temp_profile_new    
+    temp_profile_old=copy.deepcopy(temp_profile_new)    
     
 # Display results.    
 plt.xlabel('x [m]')   
@@ -48,5 +49,6 @@ plt.plot(temp_axis,temp_points)
 plt.xlabel('time [s]')    
 plt.ylabel('temperature [c]')    
 plt.show()    
+
 
 # %%
