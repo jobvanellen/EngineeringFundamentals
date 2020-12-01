@@ -46,8 +46,11 @@ def determine_mixed_k_down (matrix):
     return mixed_k  
   
 # Set up variables& constants
-arraysizey = 350
-arraysizex = 80
+arraysizey = 340
+arraysizex = 38
+
+bar_length = 340
+bar_width = 18
 
 # temperature matrices
 temp_old =np.ones((arraysizey,arraysizex))  
@@ -69,39 +72,49 @@ qflow = np.zeros((arraysizey,arraysizex))
 dx=0.001 # 1 mm grid, 150 points, = 0.15 m  
 dt=0.001  
 
-# defining material constants. We will use a dict for this 
+# defining material constants. We will use a dict for this
+# rod is 34 cm long, 1,8 cm in diameter 
 # need aluminium and isolation(unknown material)
 # teflon and stainless steel not needed in rod scenario 
 # heatloss to water (and air)
 aluminium = {  
-    'rho': 2700,  
-    'k': 237,  
-    'c': 897,  
+    'rho': 2700,    # density, kg/m3
+    'k': 237,       # thermal conductivity, W/m*K
+    'c': 897,       # heat capacity, J/K
 }  
-stainless_steel={  
-    'rho': 7500,  
-    'k': 14.4,  
-    'c': 502,  
+isolation={  
+    'rho': 40,  
+    'k': 0.021,  
+    'c': 2000,  
 }  
-teflon={  
-    'rho': 2200,  
-    'k': 0.25,  
-    'c': 1000,  
+water={  
+    'rho': 1000,  
+    'k': 0,  
+    'c': 0,  
+
 }  
+air={
+    'rho' : 1.2,
+    'k' : 0,
+    'c' : 0
+}
+
 
 # we need a link between a number and the name of the material  
 material_list={  
         1:aluminium,  
-        2:stainless_steel,  
-        3:teflon  
+        2:isolation,  
+        3:water, 
+        4:air
 }  
 
-# here we define the composition of our rectangle.  
+# here we define the composition of our rectangle.
+   
 material_matrix[0:arraysizey-1,0:arraysizex-1]=2 
-material_matrix[25:325, int(arraysizex/2-15):int(arraysizex/2+15)]=1
+material_matrix[0:arraysizey-1, int((arraysizex)/2-9):int((arraysizex-1)/2+8)]=1
 
-# we'll add a power source  
-pnetto [25:50, 38:42]=2000000
+# power source  
+pnetto [0:25, int((arraysizex-1)/2-3):int((arraysizex-1)/2+2)]=4000000
 
 # display of the material  
 plt.figure(figsize = (16,4))  
@@ -129,9 +142,10 @@ temp_axis =np.zeros(steps_to_show+1)
 temp_teller=0  
 
 # Run simulation
-for t in range (0,100001):
-    #if t>50001 :
-        #pnetto=0*pnetto
+for t in range (0,1000001):
+    #switch off heat source
+    #if t>500001 :
+    #    pnetto=0*pnetto
     # force water to 20 c
     #temp_old [watery, waterx] = 0
 
@@ -148,7 +162,7 @@ for t in range (0,100001):
     # for this boundary we assume it radiates energy into space  
     #temp_new[0:50,arraysizex-1]=temp_new[0:50,arraysizex-1]-5.67e-8*dt*(temp_new[0:50,arraysizex-1]+273.15)**4  
 
-    if (t%(1000)==0):  
+    if (t%(10000)==0):  
         # display results.   
         plt.figure(figsize = (16,4))  
         im=plt.imshow(temp_new,cmap="gist_ncar")   
@@ -161,5 +175,8 @@ for t in range (0,100001):
         #plt.colorbar(im2)  
         #plt.show()  
         print ("t=",t*dt)
+    
+    temp_old=copy.deepcopy(temp_new)
+
 
 # %%
