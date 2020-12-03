@@ -143,13 +143,13 @@ k_up=determine_mixed_k_up(k)
 k_down=determine_mixed_k_down(k)
 
 # this is used for the graph at the end  
-steps_to_show = 100    
+steps_to_show = 300    
 temp_points=np.zeros((8,steps_to_show+1))    
 temp_axis =np.zeros(steps_to_show+1)    
 temp_teller=0  
 
 # Run simulation
-for t in range (0,1000001):
+for t in range (0,3000001):
     #uncomment to switch off heat source after certain amount of time
     #if t>500001 :
     #    pnetto=0*pnetto
