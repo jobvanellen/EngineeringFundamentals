@@ -1,7 +1,10 @@
 #%%
 import numpy as np  
 import matplotlib.pyplot as plt  
-import copy  
+import copy
+import os
+import pandas as pd
+from pathlib import Path  
 
 # functions to calculate the delta T difference between 2 points  
 def delta_2d_left (matrix):  
@@ -86,7 +89,8 @@ isolation={
     'rho': 40,  
     'k': 0.021,  
     'c': 2000,  
-}  
+}
+# unused  
 water={  
     'rho': 1000,  
     'k': 0,  
@@ -103,23 +107,26 @@ air={
 # we need a link between a number and the name of the material  
 material_list={  
         1:aluminium,  
-        2:isolation,  
+        2:isolation,
+        # unused  
         3:water, 
         4:air
 }  
 
 # here we define the composition of our rectangle.
-   
 material_matrix[0:arraysizey-1,0:arraysizex-1]=2 
 material_matrix[0:arraysizey-1, int((arraysizex)/2-9):int((arraysizex-1)/2+8)]=1
 
 # power source  
-pnetto [0:25, int((arraysizex-1)/2-3):int((arraysizex-1)/2+2)]=4000000
+pnetto [0:25, int((arraysizex-1)/2-2):int((arraysizex-1)/2+2)]=4000000
 
 # display of the material  
 plt.figure(figsize = (16,4))  
 im=plt.imshow(material_matrix)   
-plt.colorbar(im)  
+plt.colorbar(im)
+plt.scatter([int(arraysizex/2-9),int(arraysizex/2-9),int(arraysizex/2-9),\
+    int(arraysizex/2-6),int(arraysizex/2-3),int(arraysizex/2),int(arraysizex/2-9),\
+        int(arraysizex/2-9)],[26,103,178,178,178,178,253, 327], marker='.')   
 plt.show() 
 
 # copy all the values of the chosen materials in the different matrices y,x  
@@ -136,20 +143,18 @@ k_up=determine_mixed_k_up(k)
 k_down=determine_mixed_k_down(k)
 
 # this is used for the graph at the end  
-steps_to_show = 500    
-temp_points=np.zeros((11,steps_to_show+1))    
+steps_to_show = 100    
+temp_points=np.zeros((8,steps_to_show+1))    
 temp_axis =np.zeros(steps_to_show+1)    
 temp_teller=0  
 
 # Run simulation
 for t in range (0,1000001):
-    #switch off heat source
+    #uncomment to switch off heat source after certain amount of time
     #if t>500001 :
     #    pnetto=0*pnetto
-    # force water to 20 c
-    #temp_old [watery, waterx] = 0
 
-    # this is the actual difference equation  
+    # difference equation  
     temp_new=temp_old+pnetto*dt/(rho*c)+dt/(dx*dx*rho*c)*(k_left*delta_2d_left(temp_old)+k_right*delta_2d_right(temp_old)+k_up*delta_2d_up(temp_old)+k_down*delta_2d_down(temp_old))  
     
     # in principle our boundaries are floating (perfectly isolated)  
@@ -157,17 +162,22 @@ for t in range (0,1000001):
     temp_new[0:arraysizey-1,arraysizex-1]=temp_new[0:arraysizey-1,arraysizex-2]  
     temp_new[0,0:arraysizex-1]=temp_new[1,0:arraysizex-1]  
     temp_new[arraysizey-1,0:arraysizex-1]=temp_new[arraysizey-2,0:arraysizex-1]  
-    # This boundary is kept at a constant temperature, we force it to 20c  
-    temp_new[0:arraysizey-1,0]=20 
+    # Isolation boundaries at 20 C 
+    temp_new[0:arraysizey-1,0]=20
+    temp_new[0:arraysizey-1, arraysizex-1]=20
+    # Bottom boundary at 20 C
+    temp_new[arraysizey-1, 0:arraysizex-1]=20
+    #temp_new[arraysizey-1, 0:arraysizex-1]=13
     # for this boundary we assume it radiates energy into space  
     #temp_new[0:50,arraysizex-1]=temp_new[0:50,arraysizex-1]-5.67e-8*dt*(temp_new[0:50,arraysizex-1]+273.15)**4  
 
-    if (t%(10000)==0):  
+    if (t%(10000)==0):
+          
         # display results.   
         plt.figure(figsize = (16,4))  
         im=plt.imshow(temp_new,cmap="gist_ncar")   
         # see https://matplotlib.org/examples/color/colormaps_reference.html  
-        plt.colorbar(im)  
+        plt.colorbar(im) 
         plt.show()  
         #plt.figure(figsize = (16,4))  
         #im2=plt.imshow(qflow,cmap="hot")   
@@ -175,8 +185,68 @@ for t in range (0,1000001):
         #plt.colorbar(im2)  
         #plt.show()  
         print ("t=",t*dt)
+
+        temp_points[0,temp_teller]=temp_new[26,int(arraysizex/2-9)]  
+        temp_points[1,temp_teller]=temp_new[103,int(arraysizex/2-9)]  
+        temp_points[2,temp_teller]=temp_new[178,int(arraysizex/2-9)]  
+        temp_points[3,temp_teller]=temp_new[178,int(arraysizex/2-6)]  
+        temp_points[4,temp_teller]=temp_new[178,int(arraysizex/2-3)]  
+        temp_points[5,temp_teller]=temp_new[178,int(arraysizex/2)]  
+        temp_points[6,temp_teller]=temp_new[253,int(arraysizex/2-9)]  
+        temp_points[7,temp_teller]=temp_new[327,int(arraysizex/2-9)]  
+        temp_axis[temp_teller]=t*dt    
+        temp_teller=temp_teller+1            
+        plt.plot(temp_axis,temp_points[0])  
+        plt.plot(temp_axis,temp_points[1])  
+        plt.plot(temp_axis,temp_points[2])  
+        plt.plot(temp_axis,temp_points[3])  
+        plt.plot(temp_axis,temp_points[4])  
+        plt.plot(temp_axis,temp_points[5])  
+        plt.plot(temp_axis,temp_points[6])  
+        plt.plot(temp_axis,temp_points[7])  
+        plt.show()
+        
+        #data to file
+        if (t%(100000)==0) and t > 0:  
+         # each x seconds (simualation time) the file is saved  
+            file = open('testfile.txt','w')
+            file.write('[\n')   
+            for t in range (0,steps_to_show):
+                if t > 0:
+                    file.write(',\n')
+                file.write('[')  
+                file.write(str(temp_axis[t]))     
+                file.write(',')  
+                file.write(str(temp_points[0][t]))   
+                file.write(',')  
+                file.write(str(temp_points[1][t]))   
+                file.write(',')  
+                file.write(str(temp_points[2][t]))   
+                file.write(',')  
+                file.write(str(temp_points[3][t]))   
+                file.write(',')  
+                file.write(str(temp_points[4][t]))   
+                file.write(',')  
+                file.write(str(temp_points[5][t]))   
+                file.write(',')  
+                file.write(str(temp_points[6][t]))   
+                file.write(',')  
+                file.write(str(temp_points[7][t]))   
+                file.write(']')  
+            file.write('\n]')
+            file.close()
+            localdir = Path(os.getcwd())
+            txt_path = localdir / 'testfile.txt'    
+            df = pd.read_json(txt_path)
+            excel_path = localdir / 'sim_data.xlsx'
+            try:
+                df.to_excel(excel_path)
+            except:
+                print("excel file write failed")
     
     temp_old=copy.deepcopy(temp_new)
 
-
+print("Done!")
 # %%
+
+
