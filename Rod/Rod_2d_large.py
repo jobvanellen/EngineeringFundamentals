@@ -94,7 +94,7 @@ isolation={
 water={  
     'rho': 1000,  
     'k': 0.6,  
-    'c': 0.004186,  
+    'c': 4.186,  
 
 } 
 #used 
@@ -120,7 +120,7 @@ material_matrix[0:arraysizey-1, int((arraysizex)/2-9):int((arraysizex-1)/2+9)]=1
 material_matrix[arraysizey-1, 0:arraysizex-1]=3
 
 # power source  
-pnetto [0:25, int((arraysizex-1)/2-2):int((arraysizex-1)/2+2)]=4000000
+pnetto [0:25, int((arraysizex-1)/2-2):int((arraysizex-1)/2+2)]=4300000
 
 # display of the material  
 plt.figure(figsize = (16,4))  
@@ -145,7 +145,7 @@ k_up=determine_mixed_k_up(k)
 k_down=determine_mixed_k_down(k)
 
 # this is used for the graph at the end  
-steps_to_show = 300    
+steps_to_show = 540    
 temp_points=np.zeros((8,steps_to_show+1))    
 temp_axis =np.zeros(steps_to_show+1)    
 temp_teller=0  
@@ -155,6 +155,7 @@ for t in range (0,5400001):
     #uncomment to switch off heat source after certain amount of time
     if t>3450001 :
         pnetto=0*pnetto
+    
 
     # difference equation  
     temp_new=temp_old+pnetto*dt/(rho*c)+dt/(dx*dx*rho*c)*(k_left*delta_2d_left(temp_old)+k_right*delta_2d_right(temp_old)+k_up*delta_2d_up(temp_old)+k_down*delta_2d_down(temp_old))  
@@ -167,8 +168,12 @@ for t in range (0,5400001):
     # Isolation boundaries at 20 C 
     temp_new[0:arraysizey-1,0]=20
     temp_new[0:arraysizey-1, arraysizex-1]=20
-    # Bottom boundary (water) at 16 C
-    temp_new[arraysizey-1, 0:arraysizex-1]= 18
+    # Bottom boundary (water) at 15 C
+    temp_new[arraysizey-1, 0:arraysizex-1]= 15
+    # bottom of rod can't go below 20C
+    if temp_new[arraysizey-2, 0:arraysizex-1] < 20:
+        temp_new[arraysizey-2, 0:arraysizex-1]=20
+
     # for these boundaries we assume it radiates energy into space  
     #temp_new[0:arraysizey-2,0]=temp_new[0:arraysizey-2,0]-5.67e-8*dt*(temp_new[0:arraysizey-2,0]+273.15)**4  
     #temp_new[0:arraysizey-2,arraysizex-1]=temp_new[0:arraysizey-2,arraysizex-1]-5.67e-8*dt*(temp_new[0:arraysizey-2,arraysizex-1]+273.15)**4  
