@@ -171,8 +171,8 @@ for t in range (0,5400001):
     # Bottom boundary (water) at 15 C
     temp_new[arraysizey-1, 0:arraysizex-1]= 15
     # bottom of rod can't go below 20C
-    if temp_new[arraysizey-2, 0:arraysizex-1] < 20:
-        temp_new[arraysizey-2, 0:arraysizex-1]=20
+    if temp_new[arraysizey-2,int(arraysizex/2)] < 20:
+        temp_new[arraysizey-2, int(arraysizex/2-9):int(arraysizex/2+9)]=20
 
     # for these boundaries we assume it radiates energy into space  
     #temp_new[0:arraysizey-2,0]=temp_new[0:arraysizey-2,0]-5.67e-8*dt*(temp_new[0:arraysizey-2,0]+273.15)**4  
