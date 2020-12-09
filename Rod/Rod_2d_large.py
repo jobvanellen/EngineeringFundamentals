@@ -49,7 +49,7 @@ def determine_mixed_k_down (matrix):
     return mixed_k  
   
 # Set up variables& constants
-arraysizey = 340
+arraysizey = 341
 arraysizex = 38
 
 bar_length = 340
@@ -90,13 +90,14 @@ isolation={
     'k': 0.021,  
     'c': 2000,  
 }
-# unused  
+  
 water={  
     'rho': 1000,  
-    'k': 0,  
-    'c': 0,  
+    'k': 0.6,  
+    'c': 0.004186,  
 
-}  
+} 
+#used 
 air={
     'rho' : 1.2,
     'k' : 0,
@@ -107,15 +108,16 @@ air={
 # we need a link between a number and the name of the material  
 material_list={  
         1:aluminium,  
-        2:isolation,
-        # unused  
+        2:isolation,  
         3:water, 
+        #unused
         4:air
 }  
 
 # here we define the composition of our rectangle.
 material_matrix[0:arraysizey-1,0:arraysizex-1]=2 
-material_matrix[0:arraysizey-1, int((arraysizex)/2-9):int((arraysizex-1)/2+8)]=1
+material_matrix[0:arraysizey-1, int((arraysizex)/2-9):int((arraysizex-1)/2+9)]=1
+material_matrix[arraysizey-1, 0:arraysizex-1]=3
 
 # power source  
 pnetto [0:25, int((arraysizex-1)/2-2):int((arraysizex-1)/2+2)]=4000000
@@ -149,10 +151,10 @@ temp_axis =np.zeros(steps_to_show+1)
 temp_teller=0  
 
 # Run simulation
-for t in range (0,3000001):
+for t in range (0,5400001):
     #uncomment to switch off heat source after certain amount of time
-    #if t>500001 :
-    #    pnetto=0*pnetto
+    if t>3450001 :
+        pnetto=0*pnetto
 
     # difference equation  
     temp_new=temp_old+pnetto*dt/(rho*c)+dt/(dx*dx*rho*c)*(k_left*delta_2d_left(temp_old)+k_right*delta_2d_right(temp_old)+k_up*delta_2d_up(temp_old)+k_down*delta_2d_down(temp_old))  
@@ -165,10 +167,11 @@ for t in range (0,3000001):
     # Isolation boundaries at 20 C 
     temp_new[0:arraysizey-1,0]=20
     temp_new[0:arraysizey-1, arraysizex-1]=20
-    # Bottom boundary at 20 C
-    temp_new[arraysizey-1, 0:arraysizex-1]=20
-    #temp_new[arraysizey-1, 0:arraysizex-1]=13
-    # for this boundary we assume it radiates energy into space  
+    # Bottom boundary (water) at 16 C
+    temp_new[arraysizey-1, 0:arraysizex-1]= 18
+    # for these boundaries we assume it radiates energy into space  
+    #temp_new[0:arraysizey-2,0]=temp_new[0:arraysizey-2,0]-5.67e-8*dt*(temp_new[0:arraysizey-2,0]+273.15)**4  
+    #temp_new[0:arraysizey-2,arraysizex-1]=temp_new[0:arraysizey-2,arraysizex-1]-5.67e-8*dt*(temp_new[0:arraysizey-2,arraysizex-1]+273.15)**4  
     #temp_new[0:50,arraysizex-1]=temp_new[0:50,arraysizex-1]-5.67e-8*dt*(temp_new[0:50,arraysizex-1]+273.15)**4  
 
     if (t%(10000)==0):
