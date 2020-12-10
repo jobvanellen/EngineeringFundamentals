@@ -120,7 +120,7 @@ material_matrix[0:arraysizey-1, int((arraysizex)/2-9):int((arraysizex-1)/2+9)]=1
 material_matrix[arraysizey-1, 0:arraysizex-1]=3
 
 # power source  
-pnetto [0:25, int((arraysizex-1)/2-2):int((arraysizex-1)/2+2)]=4300000
+pnetto [0:25, int((arraysizex-1)/2-2):int((arraysizex-1)/2+2)]=4500000
 
 # display of the material  
 plt.figure(figsize = (16,4))  
@@ -168,8 +168,8 @@ for t in range (0,5400001):
     # Isolation boundaries at 20 C 
     temp_new[0:arraysizey-1,0]=20
     temp_new[0:arraysizey-1, arraysizex-1]=20
-    # Bottom boundary (water) at 15 C
-    temp_new[arraysizey-1, 0:arraysizex-1]= 15
+    # Bottom boundary (water) at 11 C
+    temp_new[arraysizey-1, 0:arraysizex-1]= 12
     # bottom of rod can't go below 20C
     if temp_new[arraysizey-2,int(arraysizex/2)] < 20:
         temp_new[arraysizey-2, int(arraysizex/2-9):int(arraysizex/2+9)]=20
@@ -182,11 +182,11 @@ for t in range (0,5400001):
     if (t%(10000)==0):
           
         # display results.   
-        plt.figure(figsize = (16,4))  
-        im=plt.imshow(temp_new,cmap="gist_ncar")   
+        #plt.figure(figsize = (16,4))  
+        #im=plt.imshow(temp_new,cmap="gist_ncar")   
         # see https://matplotlib.org/examples/color/colormaps_reference.html  
-        plt.colorbar(im) 
-        plt.show()  
+        #plt.colorbar(im) 
+        #plt.show()  
         #plt.figure(figsize = (16,4))  
         #im2=plt.imshow(qflow,cmap="hot")   
         # see https://matplotlib.org/examples/color/colormaps_reference.html  
@@ -204,15 +204,15 @@ for t in range (0,5400001):
         temp_points[7,temp_teller]=temp_new[327,int(arraysizex/2-9)]  
         temp_axis[temp_teller]=t*dt    
         temp_teller=temp_teller+1            
-        plt.plot(temp_axis,temp_points[0])  
-        plt.plot(temp_axis,temp_points[1])  
-        plt.plot(temp_axis,temp_points[2])  
-        plt.plot(temp_axis,temp_points[3])  
-        plt.plot(temp_axis,temp_points[4])  
-        plt.plot(temp_axis,temp_points[5])  
-        plt.plot(temp_axis,temp_points[6])  
-        plt.plot(temp_axis,temp_points[7])  
-        plt.show()
+        #plt.plot(temp_axis,temp_points[0])  
+        #plt.plot(temp_axis,temp_points[1])  
+        #plt.plot(temp_axis,temp_points[2])  
+        #plt.plot(temp_axis,temp_points[3])  
+        #plt.plot(temp_axis,temp_points[4])  
+        #plt.plot(temp_axis,temp_points[5])  
+        #plt.plot(temp_axis,temp_points[6])  
+        #plt.plot(temp_axis,temp_points[7])  
+        #plt.show()
         
         #data to file
         if (t%(100000)==0) and t > 0:  
